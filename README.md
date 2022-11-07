@@ -2,7 +2,7 @@
 
 * AWS CLI
 
-## Firefly testing
+## Setup
 
 * Create `nodejs` lambda function in AWS console using the name `firefly-error-test`
 * `cd` into the `firefly-test` directory and run the folloing commands, replacing region with the region in which your lambda function resides:
@@ -53,3 +53,9 @@ $ aws lambda update-function-code --function-name firefly-error-test --zip-file 
 * Provide the following name `firefly-test-parameter-policy` and click `Create policy`
 
 Please see the `failure-lambda` module [here](https://github.com/gunnargrosch/failure-lambda) for relevant instructions on adpating the parameter to create different error types.
+
+## Function invoker
+
+* add the URL's that will invoke your aws lambdas (or any serverless function), to the array called `FAAS_URLS`
+* set `INTERVAL` to the rate (in milliseconds) you want `setTimeout` to be called
+* set `VARIANCE` to the maximum of your random time range (in milliseconds) for the function to be invoked
