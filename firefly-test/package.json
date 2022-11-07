@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "failure-lambda": "^0.4.4"
+  }
+}
