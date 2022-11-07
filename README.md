@@ -4,13 +4,16 @@
 
 ## Firefly testing
 
-* Create `nodejs` lambda function in AWS console using the name `firefly-test`
+* Create `nodejs` lambda function in AWS console using the name `firefly-error-test`
 * `cd` into the `firefly-test` directory and run the folloing commands, replacing region with the region in which your lambda function resides:
 
 ```
-$ aws lambda update-function-code --function-name firefly-test --zip-file fileb://function.zip
-$ aws ssm put-parameter --region <region> --name failureLambdaConfig --type String --overwrite --value "{\"isEnabled\": false, \"failureMode\": \"latency\", \"rate\": 1, \"minLatency\": 100, \"maxLatency\": 400, \"exceptionMsg\": \"Exception message!\", \"statusCode\": 404, \"diskSpace\": 100, \"denylist\": [\"s3.*.amazonaws.com\", \"dynamodb.*.amazonaws.com\"]}"
+$ aws lambda update-function-code --function-name firefly-error-test --zip-file fileb://function.zip
 ```
+
+* Navigate to the AWS parameter store and create a new parameter
+  * Name: `failureLambdaConfig`
+  * Value: `{"isEnabled": true, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "denylist": ["s3.*.amazonaws.com", "dynamodb.*.amazonaws.com"]}`
 
 * Add the following environment variable to your function `FAILURE_INJECTION_PARAM` and set the value to `failureLambdaConfig`
 
@@ -20,7 +23,7 @@ $ aws ssm put-parameter --region <region> --name failureLambdaConfig --type Stri
 * Navigate to `Configuration > Permissions`
 * Click the functions role
 * Click `Add permissions` and `Create inline policy`
-* In the JSON editor paste the following:
+* In the JSON editor paste the following
   * Replace region and account number with your relevant details
   * Run the following command `aws sts get-caller-identity` to get your account number
 
@@ -46,4 +49,7 @@ $ aws ssm put-parameter --region <region> --name failureLambdaConfig --type Stri
 }
 ```
 
-Please see the `failure-lambda` module [here](https://github.com/gunnargrosch/failure-lambda) for relevant instructions on adpating the parameter to suit your specific needs.
+* Click `Review policy`
+* Provide the following name `firefly-test-parameter-policy` and click `Create policy`
+
+Please see the `failure-lambda` module [here](https://github.com/gunnargrosch/failure-lambda) for relevant instructions on adpating the parameter to create different error types.
