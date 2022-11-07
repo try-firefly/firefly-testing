@@ -12,8 +12,11 @@ $ aws lambda update-function-code --function-name firefly-error-test --zip-file 
 ```
 
 * Navigate to the AWS parameter store and create a new parameter
-  * Name: `failureLambdaConfig`
-  * Value: `{"isEnabled": true, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "denylist": ["s3.*.amazonaws.com", "dynamodb.*.amazonaws.com"]}`
+
+```
+Name: failureLambdaConfig
+Value: {"isEnabled": true, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "denylist": ["s3.*.amazonaws.com", "dynamodb.*.amazonaws.com"]}
+```
 
 * Add the following environment variable to your function `FAILURE_INJECTION_PARAM` and set the value to `failureLambdaConfig`
 
