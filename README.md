@@ -1,5 +1,49 @@
+## Prerequisites
+
+* AWS CLI
+
 ## Firefly testing
 
-## Dev notes
+* Create `nodejs` lambda function in AWS console using the name `firefly-test`
+* `cd` into the `firefly-test` directory and run the folloing commands, replacing region with the region in which your lambda function resides:
 
-- Create `nodejs` lambda function in AWS console under the name firefly-test
+```
+$ aws lambda update-function-code --function-name firefly-test --zip-file fileb://function.zip
+$ aws ssm put-parameter --region <region> --name failureLambdaConfig --type String --overwrite --value "{\"isEnabled\": false, \"failureMode\": \"latency\", \"rate\": 1, \"minLatency\": 100, \"maxLatency\": 400, \"exceptionMsg\": \"Exception message!\", \"statusCode\": 404, \"diskSpace\": 100, \"denylist\": [\"s3.*.amazonaws.com\", \"dynamodb.*.amazonaws.com\"]}"
+```
+
+* Add the following environment variable to your function `FAILURE_INJECTION_PARAM` and set the value to `failureLambdaConfig`
+
+## Permissions
+
+* Go to your function in the AWS console
+* Navigate to `Configuration > Permissions`
+* Click the functions role
+* Click `Add permissions` and `Create inline policy`
+* In the JSON editor paste the following:
+  * Replace region and account number with your relevant details
+  * Run the following command `aws sts get-caller-identity` to get your account number
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+              "ssm:GetParameter",
+              "ssm:GetParameters",
+              "ssm:GetParametersByPath",
+              "ssm:PutParameter",
+              "ssm:DeleteParameter",
+              "ssm:DeleteParameters"
+            ],
+            "Resource": [
+              "arn:aws:ssm:<region>:<account-number>:parameter/failureLambdaConfig"
+            ]
+        }
+    ]
+}
+```
+
+Please see the `failure-lambda` module [here](https://github.com/gunnargrosch/failure-lambda) for relevant instructions on adpating the parameter to suit your specific needs.
