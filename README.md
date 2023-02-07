@@ -5,7 +5,7 @@
 ## Setup
 
 * Create `nodejs` lambda function in AWS console using the name `firefly-error-test`
-* `cd` into the `firefly-test` directory and run the folloing commands, replacing region with the region in which your lambda function resides:
+* `cd` into the `firefly-test` directory and run the following commands, replacing region with the region in which your lambda function resides:
 
 ```
 $ aws lambda update-function-code --function-name firefly-error-test --zip-file fileb://function.zip
